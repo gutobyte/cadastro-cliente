@@ -2,6 +2,7 @@ package com.cadastro.cliente.cadastrocliente.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
 
 import com.cadastro.cliente.cadastrocliente.model.Cliente;
 import com.cadastro.cliente.cadastrocliente.repository.ClienteRepository;
@@ -41,7 +42,7 @@ public class ClienteController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente salvarCliente(@RequestBody Cliente cliente){
+    public Cliente salvarCliente(@RequestBody @Valid Cliente cliente){
         return clienteRepository.save(cliente);
     }
 
@@ -50,7 +51,7 @@ public class ClienteController {
 
         return clienteRepository
             .findById(id)
-            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND) );
+            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado") );
     }
 
 
@@ -63,12 +64,12 @@ public class ClienteController {
                 clienteRepository.delete(cliente);
                 return Void.TYPE;
             })
-            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND) );
+            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado") );
     }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void atualizarCliente( @PathVariable Integer id, @RequestBody Cliente clienteAtualizado){
+    public void atualizarCliente( @PathVariable Integer id, @RequestBody @Valid Cliente clienteAtualizado){
 
         clienteRepository
             .findById(id)
@@ -76,7 +77,7 @@ public class ClienteController {
                 clienteAtualizado.setId(cliente.getId());
                 return clienteRepository.save(clienteAtualizado);
             })
-            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado"));
     }
     
 }
